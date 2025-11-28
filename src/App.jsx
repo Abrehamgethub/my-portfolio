@@ -521,6 +521,38 @@ function App() {
               </svg>
             </a>
           </div>
+
+          <div className="mt-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 text-xs text-slate-200">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300">
+              Services
+            </p>
+            <h3 className="mt-2 text-sm font-semibold text-slate-50">
+              IT, Cloud &amp; Creative Solutions
+            </h3>
+            <p className="mt-2 text-[11px] leading-relaxed text-slate-300">
+              I help teams stay online, secure, and productive with end‑to‑end support from
+              infrastructure to training and content.
+            </p>
+            <ul className="mt-2 space-y-1 text-[11px] text-slate-200">
+              <li>• Remote &amp; on‑site IT support for SMEs and schools</li>
+              <li>• Network design, Wi‑Fi &amp; security hardening</li>
+              <li>• Google Workspace / Microsoft 365 setup &amp; admin</li>
+              <li>• Ticketing, documentation &amp; workflow automation</li>
+              <li>• Training, Python/tech instruction &amp; video content</li>
+            </ul>
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('contact')
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' })
+                }
+              }}
+              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-emerald-500 px-3 py-1.5 text-[11px] font-medium text-slate-950 shadow-sm shadow-emerald-500/40 transition hover:bg-emerald-400"
+            >
+              Request a consultation
+            </button>
+          </div>
         </aside>
 
         {/* Main content */}
