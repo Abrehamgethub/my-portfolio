@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import profileImg from './assets/profile.jpg'
 
 function App() {
   const [activeCertCategory, setActiveCertCategory] = useState(null)
+  const [activeSection, setActiveSection] = useState('about')
 
   const certifications = [
     {
@@ -403,19 +404,51 @@ function App() {
           ? certifications
           : certifications.filter((c) => c.category === activeCertCategory)
 
+  useEffect(() => {
+    const sectionIds = ['about', 'experience', 'services', 'projects', 'certifications', 'contact']
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el) => el !== null)
+
+    if (sections.length === 0) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+
+        if (visible[0]?.target?.id) {
+          setActiveSection(visible[0].target.id)
+        }
+      },
+      {
+        root: null,
+        threshold: [0.25, 0.5, 0.75],
+      },
+    )
+
+    sections.forEach((section) => observer.observe(section))
+
+    return () => {
+      sections.forEach((section) => observer.unobserve(section))
+      observer.disconnect()
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50">
       <div className="mx-auto flex max-w-6xl gap-6 px-4 py-10 lg:py-14">
         {/* Sidebar */}
-        <aside className="hidden w-60 flex-shrink-0 flex-col justify-start border-r border-slate-900 pr-6 lg:flex">
+        <aside className="hidden w-60 flex-shrink-0 flex-col justify-start border-r border-slate-900 pr-6 lg:flex lg:sticky lg:top-10 lg:h-[calc(100vh-5rem)] lg:overflow-y-auto">
           <div className="space-y-6">
             <div className="space-y-1">
-              <h1 className="text-2xl font-semibold leading-tight text-slate-50">
+              <h1 className="text-3xl font-bold leading-tight text-slate-50">
                 Abreham
                 <br />
                 Kassahun
               </h1>
-              <p className="text-sm font-medium text-slate-300">System Administrator</p>
+              <p className="text-[15px] font-semibold text-slate-200">System Administrator</p>
               <p className="text-[11px] leading-relaxed text-slate-400">
                 IT Support &amp; Network
                 <br />
@@ -424,24 +457,82 @@ function App() {
             </div>
 
             <nav className="space-y-3 text-[11px] font-medium tracking-[0.18em] text-slate-400">
-              <a href="#about" className="flex items-center gap-3 hover:text-emerald-400">
-                <span className="h-px w-6 bg-slate-600" />
+              <a
+                href="#about"
+                className={`group flex items-center gap-3 hover:text-emerald-400 ${
+                  activeSection === 'about' ? 'text-emerald-400' : ''
+                }`}
+              >
+                <span
+                  className={`h-px rounded-full bg-slate-600 transition-all duration-300 group-hover:w-10 group-hover:bg-slate-300 ${
+                    activeSection === 'about' ? 'w-10 bg-emerald-400' : 'w-6'
+                  }`}
+                />
                 ABOUT
               </a>
-              <a href="#experience" className="flex items-center gap-3 hover:text-emerald-400">
-                <span className="h-px w-6 bg-slate-600" />
+              <a
+                href="#experience"
+                className={`group flex items-center gap-3 hover:text-emerald-400 ${
+                  activeSection === 'experience' ? 'text-emerald-400' : ''
+                }`}
+              >
+                <span
+                  className={`h-px rounded-full bg-slate-600 transition-all duration-300 group-hover:w-10 group-hover:bg-slate-300 ${
+                    activeSection === 'experience' ? 'w-10 bg-emerald-400' : 'w-6'
+                  }`}
+                />
                 EXPERIENCE
               </a>
-              <a href="#projects" className="flex items-center gap-3 hover:text-emerald-400">
-                <span className="h-px w-6 bg-slate-600" />
+              <a
+                href="#services"
+                className={`group flex items-center gap-3 hover:text-emerald-400 ${
+                  activeSection === 'services' ? 'text-emerald-400' : ''
+                }`}
+              >
+                <span
+                  className={`h-px rounded-full bg-slate-600 transition-all duration-300 group-hover:w-10 group-hover:bg-slate-300 ${
+                    activeSection === 'services' ? 'w-10 bg-emerald-400' : 'w-6'
+                  }`}
+                />
+                SERVICES
+              </a>
+              <a
+                href="#projects"
+                className={`group flex items-center gap-3 hover:text-emerald-400 ${
+                  activeSection === 'projects' ? 'text-emerald-400' : ''
+                }`}
+              >
+                <span
+                  className={`h-px rounded-full bg-slate-600 transition-all duration-300 group-hover:w-10 group-hover:bg-slate-300 ${
+                    activeSection === 'projects' ? 'w-10 bg-emerald-400' : 'w-6'
+                  }`}
+                />
                 PROJECTS
               </a>
-              <a href="#certifications" className="flex items-center gap-3 hover:text-emerald-400">
-                <span className="h-px w-6 bg-slate-600" />
+              <a
+                href="#certifications"
+                className={`group flex items-center gap-3 hover:text-emerald-400 ${
+                  activeSection === 'certifications' ? 'text-emerald-400' : ''
+                }`}
+              >
+                <span
+                  className={`h-px rounded-full bg-slate-600 transition-all duration-300 group-hover:w-10 group-hover:bg-slate-300 ${
+                    activeSection === 'certifications' ? 'w-10 bg-emerald-400' : 'w-6'
+                  }`}
+                />
                 CERTIFICATIONS
               </a>
-              <a href="#contact" className="flex items-center gap-3 hover:text-emerald-400">
-                <span className="h-px w-6 bg-slate-600" />
+              <a
+                href="#contact"
+                className={`group flex items-center gap-3 hover:text-emerald-400 ${
+                  activeSection === 'contact' ? 'text-emerald-400' : ''
+                }`}
+              >
+                <span
+                  className={`h-px rounded-full bg-slate-600 transition-all duration-300 group-hover:w-10 group-hover:bg-slate-300 ${
+                    activeSection === 'contact' ? 'w-10 bg-emerald-400' : 'w-6'
+                  }`}
+                />
                 CONTACT
               </a>
             </nav>
@@ -521,38 +612,6 @@ function App() {
               </svg>
             </a>
           </div>
-
-          <div className="mt-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 text-xs text-slate-200">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300">
-              Services
-            </p>
-            <h3 className="mt-2 text-sm font-semibold text-slate-50">
-              IT, Cloud &amp; Creative Solutions
-            </h3>
-            <p className="mt-2 text-[11px] leading-relaxed text-slate-300">
-              I help teams stay online, secure, and productive with end‑to‑end support from
-              infrastructure to training and content.
-            </p>
-            <ul className="mt-2 space-y-1 text-[11px] text-slate-200">
-              <li>• Remote &amp; on‑site IT support for SMEs and schools</li>
-              <li>• Network design, Wi‑Fi &amp; security hardening</li>
-              <li>• Google Workspace / Microsoft 365 setup &amp; admin</li>
-              <li>• Ticketing, documentation &amp; workflow automation</li>
-              <li>• Training, Python/tech instruction &amp; video content</li>
-            </ul>
-            <button
-              type="button"
-              onClick={() => {
-                const el = document.getElementById('contact')
-                if (el) {
-                  el.scrollIntoView({ behavior: 'smooth' })
-                }
-              }}
-              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-emerald-500 px-3 py-1.5 text-[11px] font-medium text-slate-950 shadow-sm shadow-emerald-500/40 transition hover:bg-emerald-400"
-            >
-              Request a consultation
-            </button>
-          </div>
         </aside>
 
         {/* Main content */}
@@ -560,22 +619,22 @@ function App() {
           {/* Hero */}
           <section id="hero" className="pt-4 space-y-6">
             <div className="space-y-2">
-              <p className="inline-flex items-center rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-[11px] font-medium text-emerald-300">
-                Ready to level up your infrastructure and support operations
+              <p className="inline-flex items-center rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase text-emerald-300">
+                Hi, my name is
               </p>
-              <h2 className="text-4xl font-semibold tracking-tight text-slate-50 sm:text-5xl">
+              <h2 className="text-5xl font-extrabold tracking-tight text-slate-50 sm:text-6xl">
                 Abreham Kassahun
               </h2>
-              <p className="text-base font-semibold text-emerald-300 sm:text-lg">
-                System Administrator &amp; IT Support Leader · Network, Cloud &amp; AI‑assisted Operations
+              <p className="text-lg font-semibold text-emerald-300 sm:text-xl">
+                Technical Systems Engineer | AI &amp; Automation Integrator | Infrastructure &amp; Digital
+                Solutions
               </p>
             </div>
 
-            <p className="max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
-              I help organizations keep their systems reliable, secure, and user‑friendly. From
-              enterprise networks and field support to AI‑assisted automation, I design and operate
-              infrastructure that reduces downtime, simplifies workflows, and supports business
-              growth.
+            <p className="max-w-3xl text-base leading-relaxed text-slate-200 sm:text-[17px]">
+              I help teams keep their technology reliable, secure, and easy to use. From daily IT
+              support to network design and cloud tools, I focus on practical solutions that reduce
+              downtime and make work smoother for everyone.
             </p>
 
             <div className="flex flex-wrap gap-3 pt-2 text-xs">
@@ -606,27 +665,25 @@ function App() {
           <section id="about" className="space-y-10">
             <div className="text-center space-y-2">
               <h2 className="text-3xl font-semibold text-slate-50">About</h2>
-              <p className="text-sm text-slate-300">
-                ICT infrastructure engineer and technical consultant with 9+ years of experience
+              <p className="text-base text-slate-300">
+                IT systems and infrastructure specialist with 9+ years supporting people, devices,
+                and networks.
               </p>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1.1fr)] items-start">
               {/* Profile + summary */}
               <div className="space-y-6">
-                <p className="text-sm leading-relaxed text-slate-300 sm:text-base">
-                  I am an ICT Infrastructure Engineer and Technical Consultant with over nine years
-                  of experience delivering enterprise-grade systems, leading technical teams, and
-                  implementing secure digital platforms across banking, education, and healthcare
-                  sectors. I have a proven track record in systems architecture, network security,
-                  IT service management, and cross-functional project leadership.
+                <p className="text-base leading-relaxed text-slate-200 sm:text-[17px]">
+                  I design, maintain, and support IT environments so people can focus on their work
+                  instead of their tools. I have worked across education, healthcare, banking, and
+                  small businesses, combining hands‑on support with long‑term infrastructure
+                  planning.
                 </p>
-                <p className="text-sm leading-relaxed text-slate-300 sm:text-base">
-                  My work includes deploying and maintaining digital health systems at Kino
-                  Physiotherapy Center, optimizing ERP and network environments for growing
-                  enterprises, and supporting SMEs with modern workflows and documentation
-                  practices. I am passionate about building scalable, reliable, and user-centered
-                  technical solutions that create measurable business impact.
+                <p className="text-base leading-relaxed text-slate-200 sm:text-[17px]">
+                  My experience covers network and server setup, user support, cloud platforms, and
+                  clear documentation. I enjoy turning complex technical problems into simple,
+                  reliable systems that teams can depend on every day.
                 </p>
 
                 <div className="flex flex-wrap gap-2 pt-1">
@@ -653,10 +710,10 @@ function App() {
                     </div>
                   </div>
 
-                  <div className="space-y-4 text-xs text-slate-200">
+                  <div className="space-y-4 text-sm text-slate-200">
                     <div>
                       <h4 className="font-semibold text-emerald-300">IT Support &amp; Troubleshooting</h4>
-                      <ul className="mt-1 list-disc space-y-0.5 pl-4 text-slate-300">
+                      <ul className="mt-1 list-disc space-y-1 pl-4 text-slate-200 leading-relaxed">
                         <li>Windows, macOS, Linux user support</li>
                         <li>Hardware diagnostics</li>
                         <li>System performance optimization</li>
@@ -665,7 +722,7 @@ function App() {
 
                     <div>
                       <h4 className="font-semibold text-emerald-300">Networking</h4>
-                      <ul className="mt-1 list-disc space-y-0.5 pl-4 text-slate-300">
+                      <ul className="mt-1 list-disc space-y-1 pl-4 text-slate-200 leading-relaxed">
                         <li>TCP/IP, DNS, DHCP</li>
                         <li>LAN/WAN setup, Wi‑Fi configuration</li>
                         <li>Router &amp; switch configuration</li>
@@ -674,7 +731,7 @@ function App() {
 
                     <div>
                       <h4 className="font-semibold text-emerald-300">Systems &amp; Tools</h4>
-                      <ul className="mt-1 list-disc space-y-0.5 pl-4 text-slate-300">
+                      <ul className="mt-1 list-disc space-y-1 pl-4 text-slate-200 leading-relaxed">
                         <li>Active Directory, Microsoft 365</li>
                         <li>ServiceNow / Jira ticketing systems</li>
                         <li>Remote support tools (TeamViewer, AnyDesk)</li>
@@ -683,7 +740,7 @@ function App() {
 
                     <div>
                       <h4 className="font-semibold text-emerald-300">Field Service Operations</h4>
-                      <ul className="mt-1 list-disc space-y-0.5 pl-4 text-slate-300">
+                      <ul className="mt-1 list-disc space-y-1 pl-4 text-slate-200 leading-relaxed">
                         <li>On‑site hardware replacement</li>
                         <li>End‑user training &amp; documentation</li>
                       </ul>
@@ -694,33 +751,33 @@ function App() {
             </div>
 
             {/* Soft skills and tools row spanning full width */}
-            <div className="grid gap-4 md:grid-cols-2 text-xs text-slate-200">
+            <div className="grid gap-4 md:grid-cols-2 text-sm text-slate-200">
               <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-                <h3 className="text-sm font-semibold text-slate-50">Soft Skills</h3>
-                <ul className="mt-2 grid gap-x-4 gap-y-1 pl-4 text-slate-300 md:grid-cols-2 md:list-none md:pl-0">
-                  <li className="relative md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
+                <h3 className="text-base font-semibold text-slate-50">Soft Skills</h3>
+                <ul className="mt-2 grid gap-x-4 gap-y-1 pl-4 text-sm text-slate-300 md:grid-cols-2 md:list-none md:pl-0">
+                  <li className="relative leading-relaxed md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
                     Clear and empathetic communication with non‑technical stakeholders
                   </li>
-                  <li className="relative md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
+                  <li className="relative leading-relaxed md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
                     Cross‑functional collaboration across IT, operations, and leadership
                   </li>
-                  <li className="relative md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
+                  <li className="relative leading-relaxed md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
                     Technical mentoring, training, and classroom instruction
                   </li>
-                  <li className="relative md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
+                  <li className="relative leading-relaxed md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
                     Customer service mindset with high first‑contact resolution
                   </li>
-                  <li className="relative md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
+                  <li className="relative leading-relaxed md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
                     Process documentation and knowledge management
                   </li>
-                  <li className="relative md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
+                  <li className="relative leading-relaxed md:pl-4 md:before:absolute md:before:left-0 md:before:top-1.5 md:before:h-1 md:before:w-1 md:before:rounded-full md:before:bg-slate-500">
                     Project ownership and incident escalation management
                   </li>
                 </ul>
               </div>
 
               <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-                <h3 className="text-sm font-semibold text-slate-50">Tools &amp; Platforms</h3>
+                <h3 className="text-base font-semibold text-slate-50">Tools &amp; Platforms</h3>
                 <dl className="mt-2 space-y-1.5 text-slate-300">
                   <div className="flex gap-2">
                     <dt className="w-32 text-slate-400">Cloud &amp; SaaS</dt>
@@ -755,318 +812,189 @@ function App() {
             </div>
           </section>
 
-          {/* Professional Experience heading + first role */}
+          {/* Professional Experience heading + roles */}
           <section id="experience" className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-3xl font-semibold text-slate-50">Professional Experience</h2>
-              <p className="text-sm text-slate-300">
-                Over 9 years of experience in IT support, team leadership, and customer service
+              <p className="text-base text-slate-300">
+                Over 9 years helping teams stay connected, supported, and productive.
               </p>
             </div>
 
-            <div className="mt-6 space-y-8">
-              {/* Freelance IT Support Field Engineer */}
-              <article className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+            <div className="mt-6 grid gap-6 md:grid-cols-2 text-sm text-slate-200">
+              {/* IT Support Field Engineer, AVASO Technology Solutions */}
+              <article className="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
                 <div className="border-l-2 border-emerald-400 pl-4">
-                  <h3 className="text-lg font-semibold text-slate-50">
-                    Freelance IT Support Field Engineer (Contract)
+                  <h3 className="text-base font-semibold text-slate-50">
+                    IT Support Field Engineer,
+                    <span className="italic font-normal text-slate-200"> AVASO Technology Solutions</span>
                   </h3>
-                  <p className="text-sm text-emerald-300">AVASO Technology Solutions</p>
-                  <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-slate-300">
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      Addis Ababa, Ethiopia
-                    </span>
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      November 2025 – Present
-                    </span>
-                  </div>
+                  <p className="mt-1 text-[13px] text-emerald-300">11/2025 – Present | Addis Ababa, Ethiopia</p>
                 </div>
-
-                <div className="space-y-3 text-xs text-slate-200">
-                  <h4 className="font-semibold text-emerald-300">Key Achievements &amp; Impact</h4>
-                  <ul className="list-disc space-y-1 pl-5 text-slate-300">
-                    <li>Providing on‑site and remote IT support services for AVASO clients.</li>
-                    <li>
-                      Troubleshooting hardware and software issues in enterprise environments.
-                    </li>
-                    <li>
-                      Supporting network device configurations, workstation setups, and field
-                      replacements.
-                    </li>
-                    <li>
-                      Coordinating with the Global Field Service (GFS) team for ticket assignments
-                      and reporting.
-                    </li>
-                    <li>
-                      Maintaining strong communication and customer service during client
-                      engagements.
-                    </li>
-                    <li>
-                      Completing activity documentation and ensuring customer sign‑off after each
-                      job.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-slate-100">
-                  {['Field Support', 'Hardware Troubleshooting', 'Network Configuration', 'Client Relations', 'Documentation', 'Remote Support'].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-slate-900 border border-slate-700 px-3 py-1"
-                      >
-                        {tag}
-                      </span>
-                    ),
-                  )}
-                </div>
+                <ul className="mt-1 list-disc space-y-1.5 pl-9 leading-relaxed">
+                  <li>Providing on-site and remote IT support services for AVASO clients.</li>
+                  <li>Troubleshooting hardware and software issues in enterprise environments.</li>
+                  <li>Supporting network device configurations, workstation setups, and field replacements.</li>
+                  <li>Coordinating directly with the Global Field Service (GFS) Team for ticket assignments and reporting.</li>
+                  <li>Maintaining strong communication and customer service during client engagements.</li>
+                  <li>Completing activity documentation and ensuring customer sign-off after each job.</li>
+                </ul>
               </article>
 
-              {/* IT Officer & Programming Instructor */}
-              <article className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+              {/* Creative Technologist & Freelance Consultant, Remote / Local SMEs */}
+              <article className="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
                 <div className="border-l-2 border-emerald-400 pl-4">
-                  <h3 className="text-lg font-semibold text-slate-50">
-                    IT Officer &amp; Programming Instructor
+                  <h3 className="text-base font-semibold text-slate-50">
+                    Creative Technologist &amp; Freelance Consultant,
+                    <span className="italic font-normal text-slate-200"> Remote / Local SMEs</span>
                   </h3>
-                  <p className="text-sm text-emerald-300">
-                    Ethiopian Education Initiatives (HaileManas Academy)
+                  <p className="mt-1 text-[13px] text-emerald-300">07/2024 – Present | Addis Ababa, Ethiopia</p>
+                </div>
+                <ul className="mt-1 list-disc space-y-1.5 pl-9 leading-relaxed">
+                  <li>Designed and optimized digital communication platforms for small businesses and institutions.</li>
+                  <li>Delivered visual storytelling and multimedia content for campaigns, achieving 95% client satisfaction.</li>
+                  <li>Provided ICT consulting for local entrepreneurs—digitalizing workflows and enhancing online presence.</li>
+                  <li>Supported knowledge management and documentation using Notion, Odoo, and Microsoft 365 ecosystems.</li>
+                  <li>Delivered technical training and mentorship across multiple platforms, including tutoring Python, Java, HTML/CSS, and JavaScript at Sage Training Center; providing freelance programming instruction; and volunteering as a Google Cloud mentor for ALX Ethiopia across four foundational modules.</li>
+                </ul>
+              </article>
+
+              {/* IT Officer & Programming Instructor, Ethiopian Education Initiatives */}
+              <article className="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+                <div className="border-l-2 border-emerald-400 pl-4">
+                  <h3 className="text-base font-semibold text-slate-50">
+                    IT Officer &amp; Programming Instructor,
+                    <span className="italic font-normal text-slate-200"> Ethiopian Education Initiatives (HaileManas Academy)</span>
+                  </h3>
+                  <p className="mt-1 text-[13px] text-emerald-300">02/2024 – 07/2024 | Debrebirhan, Ethiopia</p>
+                </div>
+                <ul className="mt-1 list-disc space-y-1.5 pl-9 leading-relaxed">
+                  <li>Managed 350+ iPads and Mac devices through MDM with 99% uptime and secure Google Workspace integration.</li>
+                  <li>Taught Python programming to over 350 students, emphasizing problem-solving and computational thinking.</li>
+                  <li>Introduced automated IT ticketing and documentation systems, reducing resolution time by 30% and achieving 95% first-contact resolution.</li>
+                </ul>
+                <p className="mt-1 text-[13px] text-slate-200">
+                  <span className="font-semibold">Skills:</span> MDM | Python | Google Workspace | Automation | Technical Support
+                </p>
+              </article>
+
+              {/* Senior IT Infrastructure & Digital Systems Lead, Hikma Electronics plc */}
+              <article className="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+                <div className="border-l-2 border-emerald-400 pl-4">
+                  <h3 className="text-base font-semibold text-slate-50">
+                    Senior IT Infrastructure &amp; Digital Systems Lead,
+                    <span className="italic font-normal text-slate-200"> Hikma Electronics plc</span>
+                  </h3>
+                  <p className="mt-1 text-[13px] text-emerald-300">07/2018 – 02/2024 | Addis Ababa, Ethiopia</p>
+                </div>
+                <ul className="mt-1 list-disc space-y-1.5 pl-9 leading-relaxed">
+                  <li>Translated operational and finance workflow requirements into IT system configurations across 20+ enterprise clients.</li>
+                  <li>Supported ERP-related activities including user access management, workflow optimization, approval chains, inventory control, and financial process alignment in Microsoft Dynamics 365 and OrbitHealth-based health information systems.</li>
+                  <li>Acted as a technical liaison between finance teams, system vendors (OrbitHealth), and internal stakeholders, ensuring feature requests, enhancements, and bug reports were captured, refined, and delivered.</li>
+                  <li>Coordinated multi-team incident response and system improvement cycles—mirroring Agile delivery—maintaining continuity for billing, claims processing, and reporting modules.</li>
+                  <li>Produced implementation documentation, change logs, user guides, and release updates, enhancing system adoption and transparency.</li>
+                  <li>Supported cost-related decisions by analyzing IT resource utilization, optimizing infrastructure, and contributing to budget-aligned system planning.</li>
+                </ul>
+              </article>
+
+              {/* System Administrator & IT Operations Lead, Shemu Group */}
+              <article className="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+                <div className="border-l-2 border-emerald-400 pl-4">
+                  <h3 className="text-base font-semibold text-slate-50">
+                    System Administrator &amp; IT Operations Lead,
+                    <span className="italic font-normal text-slate-200"> Shemu group</span>
+                  </h3>
+                  <p className="mt-1 text-[13px] text-emerald-300">02/2018 – 07/2018 | Addis Ababa, Ethiopia</p>
+                </div>
+                <ul className="mt-1 list-disc space-y-1.5 pl-9 leading-relaxed">
+                  <li>Administered Microsoft Dynamics 365 ERP for finance, HR, and operations; optimized workflows, role-based permissions, and automated reporting to improve process accuracy by 25%.</li>
+                  <li>Aligned cross-departmental needs into ERP configurations, bringing business rules and user requirements into actionable enhancements.</li>
+                </ul>
+              </article>
+
+              {/* IT Support & Systems Deployment Engineer, Net & Com plc */}
+              <article className="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+                <div className="border-l-2 border-emerald-400 pl-4">
+                  <h3 className="text-base font-semibold text-slate-50">
+                    IT Support &amp; Systems Deployment Engineer,
+                    <span className="italic font-normal text-slate-200"> Net &amp; Com plc</span>
+                  </h3>
+                  <p className="mt-1 text-[13px] text-emerald-300">06/2015 – 02/2018 | Addis Ababa, Ethiopia</p>
+                </div>
+                <ul className="mt-1 list-disc space-y-1.5 pl-9 leading-relaxed">
+                  <li>Installed and configured routers, switches, and wireless access points for enterprise clients including ECA and World Food Programme.</li>
+                  <li>Handled network cabling, device setup, IP allocation, and user access control.</li>
+                  <li>Maintained IT equipment logs and configuration documents for asset tracking.</li>
+                  <li>Delivered first-contact support and escalated critical system issues to senior teams.</li>
+                  <li>Supported enterprise technology solutions for major financial institutions, translating operational and compliance requirements into technical deployments.</li>
+                  <li>Coordinated with stakeholders on system needs, regulatory constraints, and change implementation across business-critical workflows.</li>
+                </ul>
+              </article>
+            </div>
+          </section>
+
+          {/* Services */}
+          <section id="services" className="space-y-8">
+            <div className="text-center space-y-2">
+              <h2 className="text-3xl font-semibold text-slate-50">Services</h2>
+              <p className="text-sm text-slate-300 max-w-2xl mx-auto">
+                Practical IT support, network design, and cloud solutions to keep your business
+                running smoothly.
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              <article className="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-200">
+                <header className="space-y-2">
+                  <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-200">
+                    <span className="text-lg">🖥️</span>
+                  </div>
+                  <h3 className="text-sm font-semibold text-slate-50">Managed IT Support</h3>
+                  <p className="text-sm text-slate-300">
+                    Remote and on‑site help for your day‑to‑day IT needs, so your team can stay
+                    focused on their work.
                   </p>
-                  <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-slate-300">
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      Debrebirhan, Ethiopia
-                    </span>
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      02/2024 – 07/2024
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-3 text-xs text-slate-200">
-                  <h4 className="font-semibold text-emerald-300">Key Achievements &amp; Impact</h4>
-                  <ul className="list-disc space-y-1 pl-5 text-slate-300">
-                    <li>
-                      Managed 350+ iPads and Mac devices through MDM with 99% uptime and secure Google
-                      Workspace integration.
-                    </li>
-                    <li>
-                      Taught Python programming to over 350 students, emphasizing problem solving and
-                      computational thinking.
-                    </li>
-                    <li>
-                      Introduced automated IT ticketing and documentation systems, reducing resolution
-                      time by 30% and achieving 95% first‑contact resolution.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-slate-100">
-                  {['MDM', 'Python Programming', 'Google Workspace', 'IT Support', 'Documentation'].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-slate-900 border border-slate-700 px-3 py-1"
-                      >
-                        {tag}
-                      </span>
-                    ),
-                  )}
-                </div>
+                </header>
+                <ul className="mt-3 space-y-1.5 text-sm text-slate-200 list-disc pl-4 leading-relaxed">
+                  <li>End-user support for Windows, macOS, and Linux</li>
+                  <li>Proactive monitoring and troubleshooting</li>
+                  <li>Clear communication with non-technical teams</li>
+                </ul>
               </article>
 
-              {/* Creative Technologist & IT Consultant */}
-              <article className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-                <div className="border-l-2 border-emerald-400 pl-4">
-                  <h3 className="text-lg font-semibold text-slate-50">
-                    Creative Technologist &amp; IT Consultant
-                  </h3>
-                  <p className="text-sm text-emerald-300">Freelance (Remote / Local SMEs)</p>
-                  <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-slate-300">
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      Addis Ababa, Ethiopia
-                    </span>
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      July 2024 – Present
-                    </span>
+              <article className="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-200">
+                <header className="space-y-2">
+                  <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-200">
+                    <span className="text-lg">🌐</span>
                   </div>
-                </div>
-
-                <div className="space-y-3 text-xs text-slate-200">
-                  <h4 className="font-semibold text-emerald-300">Key Achievements &amp; Impact</h4>
-                  <ul className="list-disc space-y-1 pl-5 text-slate-300">
-                    <li>
-                      Designed and optimized digital communication platforms for small businesses
-                      and institutions.
-                    </li>
-                    <li>
-                      Delivered visual storytelling and multimedia content for campaigns, targeting
-                      high client satisfaction.
-                    </li>
-                    <li>
-                      Provided ICT consulting for local entrepreneurs, digitizing workflows and
-                      improving online presence.
-                    </li>
-                    <li>
-                      Supported knowledge management and documentation using modern productivity
-                      tools.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-slate-100">
-                  {['Digital Strategy', 'Multimedia Content', 'IT Consulting', 'Workflow Optimization', 'Knowledge Management'].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-slate-900 border border-slate-700 px-3 py-1"
-                      >
-                        {tag}
-                      </span>
-                    ),
-                  )}
-                </div>
+                  <h3 className="text-sm font-semibold text-slate-50">Network &amp; Infrastructure</h3>
+                  <p className="text-sm text-slate-300">
+                    Simple, secure networks and servers designed to grow with your organization.
+                  </p>
+                </header>
+                <ul className="mt-3 space-y-1.5 text-sm text-slate-200 list-disc pl-4 leading-relaxed">
+                  <li>LAN/WAN design, Wi‑Fi and VPN setup</li>
+                  <li>Windows Server, DHCP/DNS and access control</li>
+                  <li>Data center and branch office rollouts</li>
+                </ul>
               </article>
 
-              {/* ICT Infrastructure & VAS Integration Engineer */}
-              <article className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-                <div className="border-l-2 border-emerald-400 pl-4">
-                  <h3 className="text-lg font-semibold text-slate-50">
-                    ICT Infrastructure &amp; VAS Integration Engineer
-                  </h3>
-                  <p className="text-sm text-emerald-300">Hikma Electronics plc</p>
-                  <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-slate-300">
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      Addis Ababa, Ethiopia
-                    </span>
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      2018 – February 2024
-                    </span>
+              <article className="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-xs text-slate-200">
+                <header className="space-y-2">
+                  <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-200">
+                    <span className="text-lg">⚙️</span>
                   </div>
-                </div>
-
-                <div className="space-y-3 text-xs text-slate-200">
-                  <h4 className="font-semibold text-emerald-300">Key Achievements &amp; Impact</h4>
-                  <ul className="list-disc space-y-1 pl-5 text-slate-300">
-                    <li>
-                      Designed and maintained enterprise LAN/WAN systems for business clients with
-                      high uptime.
-                    </li>
-                    <li>
-                      Configured Windows-based servers, DHCP, DNS, and shared resource permissions
-                      across departments.
-                    </li>
-                    <li>
-                      Coordinated on hardware and network upgrades while ensuring SLA compliance.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-slate-100">
-                  {['LAN/WAN Design', 'Windows Server', 'DHCP/DNS', 'Network Monitoring', 'Vendor Management', 'Documentation'].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-slate-900 border border-slate-700 px-3 py-1"
-                      >
-                        {tag}
-                      </span>
-                    ),
-                  )}
-                </div>
-              </article>
-
-              {/* IT Supervisor */}
-              <article className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-                <div className="border-l-2 border-emerald-400 pl-4">
-                  <h3 className="text-lg font-semibold text-slate-50">IT Supervisor</h3>
-                  <p className="text-sm text-emerald-300">Shemu Group</p>
-                  <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-slate-300">
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      Addis Ababa, Ethiopia / Online
-                    </span>
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      11/2022 – 07/2023 (Online) | 02/2018 – 07/2018 (Onsite)
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-3 text-xs text-slate-200">
-                  <h4 className="font-semibold text-emerald-300">Key Achievements &amp; Impact</h4>
-                  <ul className="list-disc space-y-1 pl-5 text-slate-300">
-                    <li>Managed ERP and office network systems ensuring high operational uptime.</li>
-                    <li>
-                      Diagnosed Windows OS and application issues, conducted system updates, and
-                      managed drivers.
-                    </li>
-                    <li>
-                      Provided user training and first‑line support to employees across multiple
-                      departments.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-slate-100">
-                  {['ERP Systems', 'Windows OS', 'Network Management', 'User Training', 'Technical Support'].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-slate-900 border border-slate-700 px-3 py-1"
-                      >
-                        {tag}
-                      </span>
-                    ),
-                  )}
-                </div>
-              </article>
-
-              {/* IT Support Technician */}
-              <article className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-                <div className="border-l-2 border-emerald-400 pl-4">
-                  <h3 className="text-lg font-semibold text-slate-50">IT Support Technician</h3>
-                  <p className="text-sm text-emerald-300">Net &amp; Com plc</p>
-                  <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-slate-300">
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      Addis Ababa, Ethiopia
-                    </span>
-                    <span className="rounded-full border border-slate-700 px-3 py-1">
-                      06/2015 – 02/2018
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-3 text-xs text-slate-200">
-                  <h4 className="font-semibold text-emerald-300">Key Achievements &amp; Impact</h4>
-                  <ul className="list-disc space-y-1 pl-5 text-slate-300">
-                    <li>
-                      Installed and configured routers, switches, and wireless access points for
-                      enterprise clients.
-                    </li>
-                    <li>
-                      Deployed large‑scale network infrastructure across workstations, printers,
-                      and communication rooms.
-                    </li>
-                    <li>
-                      Provided technical support for Windows server environments and network
-                      systems.
-                    </li>
-                    <li>
-                      Maintained and troubleshot network connectivity issues ensuring system
-                      availability.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-slate-100">
-                  {['Network Installation', 'Routers & Switches', 'Windows Server', 'Technical Support', 'Wireless Networks'].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-slate-900 border border-slate-700 px-3 py-1"
-                      >
-                        {tag}
-                      </span>
-                    ),
-                  )}
-                </div>
+                  <h3 className="text-sm font-semibold text-slate-50">Cloud &amp; Automation</h3>
+                  <p className="text-sm text-slate-300">
+                    Cloud tools and simple automations that remove repetitive work and keep
+                    information organized.
+                  </p>
+                </header>
+                <ul className="mt-3 space-y-1.5 text-sm text-slate-200 list-disc pl-4 leading-relaxed">
+                  <li>Google Workspace / Microsoft 365 rollout</li>
+                  <li>Ticketing, documentation and process automation</li>
+                  <li>AI-assisted tooling for support and reporting</li>
+                </ul>
               </article>
             </div>
           </section>
@@ -1075,8 +1003,8 @@ function App() {
           <section id="projects" className="space-y-10">
             <div className="text-center space-y-2">
               <h2 className="text-3xl font-semibold text-slate-50">Featured Projects</h2>
-              <p className="text-sm text-slate-300">
-                A selection of creative and technical projects showcasing diverse skills
+              <p className="text-base text-slate-300">
+                A selection of real projects that combine IT, infrastructure, and creative work.
               </p>
             </div>
 
@@ -1090,13 +1018,12 @@ function App() {
                   <h3 className="text-base font-semibold text-slate-50">
                     Digital Campaign Video Content
                   </h3>
-                  <p className="text-xs text-slate-300">
-                    Professional video editing and motion graphics projects for 15+ digital
-                    campaigns across agencies and local brands, focused on clear storytelling and
-                    measurable engagement.
+                  <p className="text-sm text-slate-300">
+                    Video and motion graphics for campaigns and brands, focused on clear
+                    storytelling and simple, engaging visuals.
                   </p>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px]">
+                <div className="mt-4 flex flex-wrap gap-2 text-xs">
                   <span className="rounded-full bg-slate-800 px-3 py-1">Video Editing</span>
                   <span className="rounded-full bg-slate-800 px-3 py-1">Motion Graphics</span>
                   <span className="rounded-full bg-slate-800 px-3 py-1">Adobe Premiere Pro</span>
@@ -1112,13 +1039,12 @@ function App() {
                   <h3 className="text-base font-semibold text-slate-50">
                     Enterprise IT Consulting Services
                   </h3>
-                  <p className="text-xs text-slate-300">
-                    Strategic IT consulting for SMEs, including network administration, security
-                    assessments, cloud enablement, and workflow optimization to align technology
-                    with business goals.
+                  <p className="text-sm text-slate-300">
+                    IT guidance for small and growing businesses, from secure networks to simple
+                    cloud and workflow improvements.
                   </p>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px]">
+                <div className="mt-4 flex flex-wrap gap-2 text-xs">
                   <span className="rounded-full bg-slate-800 px-3 py-1">IT Consulting</span>
                   <span className="rounded-full bg-slate-800 px-3 py-1">Network Administration</span>
                   <span className="rounded-full bg-slate-800 px-3 py-1">Cybersecurity</span>
@@ -1133,12 +1059,12 @@ function App() {
                   <h3 className="text-base font-semibold text-slate-50">
                     Data Center Design &amp; Implementation
                   </h3>
-                  <p className="text-xs text-slate-300">
-                    Enterprise-grade data center design and rollout for major Ethiopian banks,
-                    including network, power, and cooling optimization to support 24/7 operations.
+                  <p className="text-sm text-slate-300">
+                    Data center design and rollout for major banks, with networks and power
+                    planned for 24/7 operations.
                   </p>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px]">
+                <div className="mt-4 flex flex-wrap gap-2 text-xs">
                   <span className="rounded-full bg-slate-800 px-3 py-1">Infrastructure</span>
                   <span className="rounded-full bg-slate-800 px-3 py-1">Network Security</span>
                   <span className="rounded-full bg-slate-800 px-3 py-1">Energy Optimization</span>
@@ -1714,6 +1640,9 @@ function App() {
 
                   <button
                     type="button"
+                    onClick={() => {
+                      window.location.href = 'mailto:akabrehamkassahun@gmail.com'
+                    }}
                     className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-5 py-2 text-xs font-medium text-slate-950 shadow-md shadow-emerald-500/30 transition hover:bg-emerald-400"
                   >
                     Send Message
